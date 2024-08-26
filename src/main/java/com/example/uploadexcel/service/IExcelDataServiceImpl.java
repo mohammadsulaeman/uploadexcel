@@ -5,19 +5,13 @@ import com.example.uploadexcel.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.NumberToTextConverter;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -26,14 +20,14 @@ public class IExcelDataServiceImpl implements IExcelDataService {
     @Autowired
     UsersRepository usersRepository;
 
-    @Value("${app.upload.file:${user.home}}")
+    @Value("${app.upload.dir:${user.home}}")
     public String EXCEL_FILE_PATH;
 
 
     private Workbook workbook;
 
     @Override
-    public List<Users> getExcelDataAsList() throws IOException {
+    public List<Users> getExcelDataAsList(String fileName) throws IOException {
         List<Users> usersList = new ArrayList<Users>();
 
 //        FileInputStream file = new FileInputStream(new File(EXCEL_FILE_PATH));
@@ -84,9 +78,10 @@ public class IExcelDataServiceImpl implements IExcelDataService {
 //        file.close();
         // Create a DataFormatter to format and get each cell's value as String
         DataFormatter dataFormatter = new DataFormatter();
+
         // Create the Workbook
         try {
-            workbook = WorkbookFactory.create(new File(EXCEL_FILE_PATH));
+            workbook = WorkbookFactory.create(new File(EXCEL_FILE_PATH+"/"+fileName));
         } catch (EncryptedDocumentException | IOException e) {
             e.printStackTrace();
         }
